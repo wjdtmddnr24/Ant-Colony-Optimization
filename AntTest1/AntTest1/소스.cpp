@@ -9,7 +9,7 @@ using namespace std;
 typedef pair<int, int> pii;
 int N, M;
 int S, E;
-long long int time;
+long long int TIME = 0L;
 double interval = 500;
 struct edge
 {
@@ -27,13 +27,13 @@ struct ant
 	int curN;
 	int reachTime;
 	bool foundFood;
-	int visited[333] = { 0, };
-	ant(){ foundFood = false; }
+	int *visited;
+	ant(){ foundFood = false; visited = new int[333](); reachTime = TIME; }
 	ant(int id, int curN) :id(id), curN(curN){
-		foundFood = false;
+		foundFood = false; visited = new int[333](); reachTime = TIME;
 	}
 	ant(int curN) :curN(curN){
-		foundFood = false;
+		foundFood = false; visited = new int[333](); reachTime = TIME;
 	}
 };
 vector<edge> edges[333];
@@ -53,12 +53,12 @@ int main(){
 	//출발 노드, 먹이 노드
 	scanf("%d %d", &S, &E);
 	cout << "시작" << endl;
-	ants.push_back(ant());
+	ants.push_back(ant(ants.size(), S));
 	while (true){
-		time++;
+		TIME++;
 		//Sleep(interval);
 		for (ant a : ants){
-			if (a.reachTime == time){
+			if (a.reachTime == TIME){
 				//TODO 현재 간선 체크
 				// TODO 간선 선택
 			}
