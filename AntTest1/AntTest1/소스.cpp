@@ -101,12 +101,13 @@ int main(){
 		memset(deltaPheromone, 0, sizeof(deltaPheromone));
 		for (int i = 0; i < ants.size(); i++){
 			ant &a = ants[i];
-			int  x = min(a.prevN,a.curN), y = max(a.curN, a.prevN);
+			int  x = min(a.prevN, a.curN), y = max(a.curN, a.prevN);
 			if (a.reachTime == TIME){
 				printf("개미 %d가 %d에서 %d로 도착\n", a.id, a.prevN, a.curN);
 				//현재 간선 페로몬 추가
 				if (a.foundFood){
-					deltaPheromone[a.prevN][a.curN] += Q / edges[a.prevN][a.curN].first;
+					//deltaPheromone[a.prevN][a.curN] += Q / edges[a.prevN][a.curN].first;
+					deltaPheromone[x][y] += Q / edges[x][y].first;
 				}
 				//음식을 찾았을때
 				if (!a.foundFood && a.curN == E){
@@ -136,11 +137,12 @@ int main(){
 				{
 					for (int i = 0; i < adj[a.curN].size(); i++){
 						int nN = adj[a.curN][i];
+						int nX = min(a.curN, nN), nY = max(a.curN, nN);
 						if (a.curN == nN || visited[a.id][nN] == 1){
 							continue;
 						}
 						probEdgeCnt++;
-						double curProb = pow(edges[a.curN][nN].second, ALPHA) * pow(((double)1) / edges[a.curN][nN].first, BETA);
+						double curProb = pow(edges[nX][nY].second, ALPHA) * pow(((double)1) / edges[nX][nY].first, BETA);
 						probSum += curProb;
 						probEdge.push_back({ nN, curProb });
 					}
@@ -156,11 +158,12 @@ int main(){
 						probEdge.clear();
 						for (int i = 0; i < adj[a.curN].size(); i++){
 							int nN = adj[a.curN][i];
+							int nX = min(a.curN, nN), nY = max(a.curN, nN);
 							if (a.curN == nN || visited[a.id][nN] == 1){
 								continue;
 							}
 							probEdgeCnt++;
-							double curProb = pow(edges[a.curN][nN].second, ALPHA) * pow(((double)1) / edges[a.curN][nN].first, BETA);
+							double curProb = pow(edges[nX][nY].second, ALPHA) * pow(((double)1) / edges[nX][nY].first, BETA);
 							probSum += curProb;
 							probEdge.push_back({ nN, curProb });
 						}
@@ -184,7 +187,8 @@ int main(){
 			int x = allEdges[i].first, y = allEdges[i].second;
 			edges[x][y].second = max(1, (1 - P)* edges[x][y].second);
 			edges[x][y].second += deltaPheromone[x][y];
-			printf("%d - %d 페로몬 양: %lf\n", x, y, edges[x][y].second);
+			if (x <= y)
+				printf("%d - %d 페로몬 양: %lf\n", x, y, edges[x][y].second);
 		}
 		printf("개미 상황\n");
 		for (ant a : ants){
